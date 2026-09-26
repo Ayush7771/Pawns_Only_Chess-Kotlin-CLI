@@ -2,7 +2,30 @@ package chess
 
 fun main() {
     println("Pawns-Only Chess")
+    println("First Player's name:")
+    val firstPlayer = readln()
+    println("Second Player's name:")
+    val secondPlayer = readln()
     ChessBoard.printBoard()
+
+    main@while (true){
+        while (true) {
+            val result = ChessBoard.moveValidation(firstPlayer)
+            if (ChessBoard.exitProgram){
+                println("Bye!")
+                break@main
+            }
+            if (result) break
+        }
+        while (true){
+            val result = ChessBoard.moveValidation(secondPlayer)
+            if (ChessBoard.exitProgram){
+                println("Bye!")
+                break@main
+            }
+            if (result) break
+        }
+    }
 }
 
 object ChessBoard {
@@ -11,6 +34,19 @@ object ChessBoard {
             " "
         }
     }
+
+    val horizontalLayer = mutableMapOf(
+        "a" to 0,
+        "b" to 1,
+        "c" to 2,
+        "d" to 3,
+        "e" to 4,
+        "f" to 5,
+        "g" to 6,
+        "h" to 7
+    )
+
+    var exitProgram = false
 
     init {
         board[1] = MutableList(8) { "W" }
@@ -29,8 +65,31 @@ object ChessBoard {
             println()
             println("  +---+---+---+---+---+---+---+---+")
         }
-        println("    a   b   c   d   e   f   g   h")
+        print("  ")
+        for (i in horizontalLayer.keys){
+            print("  $i ")
+        }
+        println(" ")
+    }
 
+    fun moveValidation(player: String) : Boolean{
+        println("$player's turn:")
+        val input = readln()
 
+        if (input == "exit"){
+            exitProgram = true
+            return true
+        }
+
+        if (!horizontalLayer.containsKey("${input[0]}") ||
+            !horizontalLayer.containsValue("${input[1]}".toInt() - 1) ||
+            !horizontalLayer.containsKey("${input[2]}") ||
+            !horizontalLayer.containsValue("${input[3]}".toInt() - 1) ||
+            input.length != 4
+            ){
+            println("Invalid Input")
+            return false
+        }
+        return true
     }
 }
