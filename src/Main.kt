@@ -10,20 +10,27 @@ fun main() {
 
     main@while (true){
         while (true) {
+            ChessBoard.firstInGame = true
             val result = ChessBoard.moveValidation(firstPlayer)
             if (ChessBoard.exitProgram){
                 println("Bye!")
                 break@main
             }
-            if (result) break
+            if (result){
+                ChessBoard.firstInGame = false
+                break}
         }
         while (true){
+            ChessBoard.secondInGame = true
             val result = ChessBoard.moveValidation(secondPlayer)
             if (ChessBoard.exitProgram){
                 println("Bye!")
                 break@main
             }
-            if (result) break
+            if (result){
+                ChessBoard.secondInGame = false
+                break
+            }
         }
     }
 }
@@ -47,6 +54,9 @@ object ChessBoard {
     )
 
     var exitProgram = false
+
+    var firstInGame = false
+    var secondInGame = false
 
     init {
         board[1] = MutableList(8) { "W" }
@@ -72,7 +82,7 @@ object ChessBoard {
         println(" ")
     }
 
-    fun moveValidation(player: String) : Boolean{
+    fun moveValidation(player: String) : Boolean {
         println("$player's turn:")
         val input = readln()
 
