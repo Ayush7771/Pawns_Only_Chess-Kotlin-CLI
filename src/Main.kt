@@ -104,8 +104,22 @@ object ChessBoard {
             return false
         }
 
-        if (firstInGame){
+        if (firstInGame) {
+            /*
+            if ("${input[1]}".toInt() - 1 == 1 && board[1][horizontalLayer["${input[0]}"]!!] == "W"){
+                if ("${input[0]}" == "${input[2]}" && )
+            }
 
+            if (board["${input[1]}".toInt() - 1][horizontalLayer["${input[0]}"]!!] == "W"){
+                if ((board["${input[3]}".toInt() - 1][horizontalLayer["${input[2]}"]!!] == " ")){}
+            } */
+
+            when {
+                "${input[1]}".toInt() - 1 == 1 && board[1][horizontalLayer["${input[0]}"]!!] == "W" ->
+                    when {
+                            "${input[1]}".toInt() - 1 == 1 && "${input[3]}".toInt() - 1 == 2 ->
+                    }
+            }
         }
 
 
