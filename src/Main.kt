@@ -8,27 +8,30 @@ fun main() {
     val secondPlayer = readln()
     ChessBoard.printBoard()
 
-    main@while (true){
+    main@ while (true) {
         while (true) {
             ChessBoard.firstInGame = true
             val result = ChessBoard.moveValidation(firstPlayer)
-            if (ChessBoard.exitProgram){
+            if (ChessBoard.exitProgram) {
                 println("Bye!")
                 break@main
             }
-            if (result){
+            if (result) {
                 ChessBoard.firstInGame = false
-                break}
+                ChessBoard.printBoard()
+                break
+            }
         }
-        while (true){
+        while (true) {
             ChessBoard.secondInGame = true
             val result = ChessBoard.moveValidation(secondPlayer)
-            if (ChessBoard.exitProgram){
+            if (ChessBoard.exitProgram) {
                 println("Bye!")
                 break@main
             }
-            if (result){
+            if (result) {
                 ChessBoard.secondInGame = false
+                ChessBoard.printBoard()
                 break
             }
         }
@@ -76,17 +79,17 @@ object ChessBoard {
             println("  +---+---+---+---+---+---+---+---+")
         }
         print("  ")
-        for (i in horizontalLayer.keys){
+        for (i in horizontalLayer.keys) {
             print("  $i ")
         }
         println(" ")
     }
 
-    fun moveValidation(player: String) : Boolean {
+    fun moveValidation(player: String): Boolean {
         println("$player's turn:")
         val input = readln()
 
-        if (input == "exit"){
+        if (input == "exit") {
             exitProgram = true
             return true
         }
@@ -96,10 +99,16 @@ object ChessBoard {
             !horizontalLayer.containsKey("${input[2]}") ||
             !horizontalLayer.containsValue("${input[3]}".toInt() - 1) ||
             input.length != 4
-            ){
+        ) {
             println("Invalid Input")
             return false
         }
+
+        if (firstInGame){
+
+        }
+
+
         return true
     }
 }
