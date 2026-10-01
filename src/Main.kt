@@ -87,38 +87,52 @@ object ChessBoard {
 
     fun moveValidation(player: String): Boolean {
         println("$player's turn:")
-        val input = readln()
+        val input = readln().split("")
 
-        if (input == "exit") {
+        if (input.size != 4) {
+            println(input.joinToString())
+            println(input.size)
+            println("Invalid Input 1")
+            return false
+        }
+
+        if (input.joinToString("") == "exit") {
             exitProgram = true
             return true
         }
 
-        if (!horizontalLayer.containsKey("${input[0]}") ||
-            !horizontalLayer.containsValue("${input[1]}".toInt() - 1) ||
-            !horizontalLayer.containsKey("${input[2]}") ||
-            !horizontalLayer.containsValue("${input[3]}".toInt() - 1) ||
-            input.length != 4
+        if (!horizontalLayer.containsKey(input[0]) ||
+            !horizontalLayer.containsValue(input[1].toInt() - 1) ||
+            !horizontalLayer.containsKey(input[2]) ||
+            !horizontalLayer.containsValue(input[3].toInt() - 1)
         ) {
             println("Invalid Input")
             return false
         }
 
+        val c1 = horizontalLayer[input[0]]!!
+        val r1 = input[1].toInt() - 1
+        val c2 = horizontalLayer[input[2]]!!
+        val r2 = input[3].toInt() - 1
+
+
         if (firstInGame) {
-            /*
-            if ("${input[1]}".toInt() - 1 == 1 && board[1][horizontalLayer["${input[0]}"]!!] == "W"){
-                if ("${input[0]}" == "${input[2]}" && )
-            }
-
-            if (board["${input[1]}".toInt() - 1][horizontalLayer["${input[0]}"]!!] == "W"){
-                if ((board["${input[3]}".toInt() - 1][horizontalLayer["${input[2]}"]!!] == " ")){}
-            } */
-
             when {
-                "${input[1]}".toInt() - 1 == 1 && board[1][horizontalLayer["${input[0]}"]!!] == "W" ->
+
+                c1 == c2 && r1 == 1 && (r2 == 2 || r2 == 3) ->
                     when {
-                            "${input[1]}".toInt() - 1 == 1 && "${input[3]}".toInt() - 1 == 2 ->
+                        board[r1][c1] == "W" -> {
+                            board[r2][c2] = "W"
+                            board[r1][c2] = " "
+                            return true
+                        }
+                        board[r1][c1] == " " -> {
+                            println("No white pawn at ${input[0] + input[1]}")
+                            return false
+                        }
                     }
+
+
             }
         }
 
