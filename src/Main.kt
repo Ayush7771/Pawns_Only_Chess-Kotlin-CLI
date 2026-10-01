@@ -83,6 +83,7 @@ object ChessBoard {
             print("  $i ")
         }
         println(" ")
+        println()
     }
 
     fun moveValidation(player: String): Boolean {
@@ -122,11 +123,23 @@ object ChessBoard {
                     return false
                 }
 
-                c1 == c2 && r1 == 1 && (r2 == 2 || r2 == 3) && board[r2][c2] != "B" ->
+                c1 != c2 && r1 == 1 && r2 == 2 && board[r1][c1] == "W" && board[r2][c2] == "B" -> {
+                    board[r2][c2] = "W"
+                    board[r1][c1] = " "
+                    return true
+                }
+
+                c1 == c2 && r1 == 1 && (r2 == 2 || r2 == 3) && board[r2][c1] != "B" ->
                     when {
+                        board[r1][c1] == "W" && board[r2][c2] == "B" -> {
+                            board[r2][c2] = "W"
+                            board[r1][c1] = " "
+                            return true
+                        }
+
                         board[r1][c1] == "W" -> {
                             board[r2][c2] = "W"
-                            board[r1][c2] = " "
+                            board[r1][c1] = " "
                             return true
                         }
 
@@ -136,7 +149,13 @@ object ChessBoard {
                         }
                     }
 
-                c1 == c2 && r1 > 1 && r1 < 7 && r2 - r1 == 1 && board[r2][c2] != "B" ->
+                c1 != c2 && r1 in 2..<7 && r2 - r1 == 1 && board[r1][c1] == "W" && board[r2][c2] == "B" -> {
+                    board[r2][c2] = "W"
+                    board[r1][c1] = " "
+                    return true
+                }
+
+                c1 == c2 && r1 in 2..<7 && r2 - r1 == 1 && board[r2][c2] != "B" ->
                     when {
                         board[r1][c1] == "W" -> {
                             board[r2][c2] = "W"
@@ -162,6 +181,12 @@ object ChessBoard {
                     return false
                 }
 
+                c1 != c2 && r1 == 6 && r2 == 5 && board[r1][c1] == "B" && board[r2][c2] == "W" -> {
+                    board[r2][c2] = "B"
+                    board[r1][c1] = " "
+                    return true
+                }
+
                 c1 == c2 && r1 == 6 && (r2 == 5 || r2 == 4) && board[r2][c2] != "W" ->
                     when {
                         board[r1][c1] == "B" -> {
@@ -175,6 +200,12 @@ object ChessBoard {
                             return false
                         }
                     }
+
+                c1 != c2 && r1 >= 1 && r1 <= 6 && r1 - r2 == 1 && board[r1][c1] == "B" && board[r2][c2] == "W" -> {
+                    board[r2][c2] = "B"
+                    board[r1][c1] = " "
+                    return true
+                }
 
                 c1 == c2 && r1 >= 1 && r1 <= 6 && r1 - r2 == 1 && board[r2][c2] != "W" ->
                     when {
