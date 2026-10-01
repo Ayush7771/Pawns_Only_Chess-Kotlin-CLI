@@ -87,47 +87,65 @@ object ChessBoard {
 
     fun moveValidation(player: String): Boolean {
         println("$player's turn:")
-        val input = readln().split("")
+        val input = readln()
 
-        if (input.size != 4) {
-            println(input.joinToString())
-            println(input.size)
-            println("Invalid Input 1")
-            return false
-        }
-
-        if (input.joinToString("") == "exit") {
+        if (input == "exit") {
             exitProgram = true
             return true
         }
 
-        if (!horizontalLayer.containsKey(input[0]) ||
-            !horizontalLayer.containsValue(input[1].toInt() - 1) ||
-            !horizontalLayer.containsKey(input[2]) ||
-            !horizontalLayer.containsValue(input[3].toInt() - 1)
-        ) {
+        try {
+            if (input.length != 4 ||
+                !horizontalLayer.containsKey("${input[0]}") ||
+                !horizontalLayer.containsValue("${input[1]}".toInt() - 1) ||
+                !horizontalLayer.containsKey("${input[2]}") ||
+                !horizontalLayer.containsValue("${input[3]}".toInt() - 1)
+            ) {
+                println("Invalid Input")
+                return false
+            }
+        } catch (e: Exception) {
             println("Invalid Input")
             return false
         }
 
-        val c1 = horizontalLayer[input[0]]!!
-        val r1 = input[1].toInt() - 1
-        val c2 = horizontalLayer[input[2]]!!
-        val r2 = input[3].toInt() - 1
+        val c1 = horizontalLayer["${input[0]}"]!!
+        val r1 = "${input[1]}".toInt() - 1
+        val c2 = horizontalLayer["${input[2]}"]!!
+        val r2 = "${input[3]}".toInt() - 1
 
 
         if (firstInGame) {
             when {
+                (r1 == r2 && c1 == c2) && (board[r1][c1] == "B" || board[r1][c1] == " ") -> {
+                    println("No white pawn at ${input[0]}${input[1]}")
+                    return false
+                }
 
-                c1 == c2 && r1 == 1 && (r2 == 2 || r2 == 3) ->
+                c1 == c2 && r1 == 1 && (r2 == 2 || r2 == 3) && board[r2][c2] != "B" ->
                     when {
                         board[r1][c1] == "W" -> {
                             board[r2][c2] = "W"
                             board[r1][c2] = " "
                             return true
                         }
-                        board[r1][c1] == " " -> {
-                            println("No white pawn at ${input[0] + input[1]}")
+
+                        board[r1][c1] == " " || board[r1][c1] == "B" -> {
+                            println("No white pawn at ${input[0]}${input[1]}")
+                            return false
+                        }
+                    }
+
+                c1 == c2 && r1 > 1 && r1 < 7 && r2 - r1 == 1 && board[r2][c2] != "B" ->
+                    when {
+                        board[r1][c1] == "W" -> {
+                            board[r2][c2] = "W"
+                            board[r1][c2] = " "
+                            return true
+                        }
+
+                        board[r1][c1] == " " || board[r1][c1] == "B" -> {
+                            println("No white pawn at ${input[0]}${input[1]}")
                             return false
                         }
                     }
@@ -136,7 +154,45 @@ object ChessBoard {
             }
         }
 
+        if (secondInGame) {
+            when {
 
-        return true
+                (r1 == r2 && c1 == c2) && (board[r1][c1] == "W" || board[r1][c1] == " ") -> {
+                    println("No black pawn at ${input[0]}${input[1]}")
+                    return false
+                }
+
+                c1 == c2 && r1 == 6 && (r2 == 5 || r2 == 4) && board[r2][c2] != "W" ->
+                    when {
+                        board[r1][c1] == "B" -> {
+                            board[r2][c2] = "B"
+                            board[r1][c2] = " "
+                            return true
+                        }
+
+                        board[r1][c1] == " " || board[r1][c1] == "W" -> {
+                            println("No black pawn at ${input[0]}${input[1]}")
+                            return false
+                        }
+                    }
+
+                c1 == c2 && r1 >= 1 && r1 <= 6 && r1 - r2 == 1 && board[r2][c2] != "W" ->
+                    when {
+                        board[r1][c1] == "B" -> {
+                            board[r2][c2] = "B"
+                            board[r1][c2] = " "
+                            return true
+                        }
+
+                        board[r1][c1] == " " || board[r1][c1] == "W" -> {
+                            println("No black pawn at ${input[0]}${input[1]}")
+                            return false
+                        }
+                    }
+            }
+        }
+
+        println("Invalid Input")
+        return false
     }
 }
