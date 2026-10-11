@@ -1,5 +1,7 @@
 package chess
 
+import kotlin.math.abs
+
 fun main() {
     println("Pawns-Only Chess")
     println("First Player's name:")
@@ -62,6 +64,11 @@ object ChessBoard {
     var firstInGame = false
     var secondInGame = false
 
+    var whitePawns = 8
+    var blackPawns = 8
+
+    var isEnPassant = false
+
     init {
         board[1] = MutableList(8) { "W" }
         board[6] = MutableList(8) { "B" }
@@ -85,6 +92,22 @@ object ChessBoard {
         }
         println(" ")
         println()
+    }
+
+    fun whiteWinsCheck() {
+        //Win conditions for White
+        if (blackPawns == 0 || board[7].contains("W")) {
+            println("White Wins!")
+            exitProgram = true
+        }
+    }
+
+    fun blackWinsCheck() {
+        //Win conditions for Blacl
+        if (whitePawns == 0 || board[0].contains("B")) {
+            println("Black Wins!")
+            exitProgram = true
+        }
     }
 
     fun moveValidation(player: String): Boolean {
@@ -119,109 +142,121 @@ object ChessBoard {
 
         if (firstInGame) {
             when {
-                r1 == r2 && c1 == c2 && board[r1][c1] != "W" -> {
+                //No White pawn at spot
+                board[r1][c1] != "W" -> {
                     println("No white pawn at ${input[0]}${input[1]}")
                     return false
-                }  //No Whitepawn at same spot
+                }
 
-                kotlin.math.abs(c1 - c2) == 1 && r1 == 1 && r2 == 2 && board[r1][c1] == "W" && board[r2][c2] == "B" -> {
-                    board[r2][c2] = "W"
-                    board[r1][c1] = " "
-                    return true
-                } //successfully moved and captured at 3rd spot
-
-                c1 == c2 && r1 == 1 && (r2 == 2 || r2 == 3) && board[r2][c2] == " " ->
+                //Adjacent Lines (2 no. row) first moves without captur
+                c1 == c2 && r1 == 1 -> {
                     when {
-                        board[r1][c1] == "W" && board[r2][c2] == "B" -> {
-                            board[r2][c2] = "W"
-                            board[r1][c1] = " "
-                            return true
-                        } //successfully moved
-
-                        board[r1][c1] == "W" -> {
+                        //first vertical single move
+                        r2 == 2 && board[r2][c2] == " " -> {
                             board[r2][c2] = "W"
                             board[r1][c1] = " "
                             return true
                         }
-
-                        board[r1][c1] == " " || board[r1][c1] == "B" -> {
-                            println("No white pawn at ${input[0]}${input[1]}")
-                            return false
+                        //first vertical double move
+                        r2 == 3 && board[r2][c2] == " " && board[r2 - 1][c2] == " " -> {
+                            board[r2][c2] = "W"
+                            board[r1][c1] = " "
+                            return true
                         }
                     }
+                }
 
-                kotlin.math.abs(c1 - c2) == 1 && r1 in 2..<7 && r2 - r1 == 1 && board[r1][c1] == "W" && board[r2][c2] == "B" -> {
+                //Adjacent Lines (2 no. row) first moves with capture
+                abs(c2 - c1) == 1 && r1 == 1 && r2 == 2 && board[r2][c2] == "B" -> {
                     board[r2][c2] = "W"
                     board[r1][c1] = " "
+                    blackPawns--
+                    whiteWinsCheck()
                     return true
                 }
 
-                c1 == c2 && r1 in 2..<7 && r2 - r1 == 1 && board[r2][c2] != "B" ->
+                //Other Lines Moves excluding Adjacent Line (2 no.)
+                r2 - r1 == 1 -> {
                     when {
-                        board[r1][c1] == "W" -> {
+                        //move only
+                        c1 == c2 && board[r2][c2] == " " -> {
                             board[r2][c2] = "W"
-                            board[r1][c2] = " "
+                            board[r1][c1] = " "
+                            whiteWinsCheck()
                             return true
                         }
-
-                        board[r1][c1] == " " || board[r1][c1] == "B" -> {
-                            println("No white pawn at ${input[0]}${input[1]}")
-                            return false
+                        //move diagonally && captured
+                        abs(c2 - c1) == 1 && board[r2][c2] == "B" -> {
+                            board[r2][c2] = "W"
+                            board[r1][c1] = " "
+                            blackPawns--
+                            whiteWinsCheck()
+                            return true
                         }
                     }
-
-
+                }
             }
+
+
         }
 
         if (secondInGame) {
             when {
-
-                (r1 == r2 && c1 == c2) && (board[r1][c1] == "W" || board[r1][c1] == " ") -> {
+                //No Black pawn at spot
+                board[r1][c1] != "B" -> {
                     println("No black pawn at ${input[0]}${input[1]}")
                     return false
                 }
 
-                kotlin.math.abs(c1 - c2) == 1 && r1 == 6 && r2 == 5 && board[r1][c1] == "B" && board[r2][c2] == "W" -> {
+                //Adjacent Lines (7 no. row) first moves without captur
+                c1 == c2 && r1 == 6 -> {
+                    when {
+                        //first vertical single move
+                        r2 == 5 && board[r2][c2] == " " -> {
+                            board[r2][c2] = "B"
+                            board[r1][c1] = " "
+                            return true
+                        }
+                        //first vertical double move
+                        r2 == 4 && board[r2][c2] == " " && board[r2 + 1][c2] == " " -> {
+                            board[r2][c2] = "B"
+                            board[r1][c1] = " "
+                            return true
+                        }
+                    }
+                }
+
+                //Adjacent Lines (7 no. row) first moves with capture
+                abs(c2 - c1) == 1 && r1 == 6 && r2 == 5 && board[r2][c2] == "W" -> {
                     board[r2][c2] = "B"
                     board[r1][c1] = " "
+                    whitePawns--
+                    blackWinsCheck()
                     return true
                 }
 
-                c1 == c2 && r1 == 6 && (r2 == 5 || r2 == 4) && board[r2][c2] != "W" ->
+                //Other Lines Moves excluding Adjacent Line (7 no.)
+                r1 - r2 == 1 -> {
                     when {
-                        board[r1][c1] == "B" -> {
+                        //move only
+                        c1 == c2 && board[r2][c2] == " " -> {
                             board[r2][c2] = "B"
-                            board[r1][c2] = " "
+                            board[r1][c1] = " "
+                            blackWinsCheck()
                             return true
                         }
-
-                        board[r1][c1] == " " || board[r1][c1] == "W" -> {
-                            println("No black pawn at ${input[0]}${input[1]}")
-                            return false
+                        //move diagonally && captured
+                        abs(c2 - c1) == 1 && board[r2][c2] == "W" -> {
+                            board[r2][c2] = "B"
+                            board[r1][c1] = " "
+                            whitePawns--
+                            blackWinsCheck()
+                            return true
                         }
                     }
-
-                kotlin.math.abs(c1 - c2) == 1 && r1 >= 1 && r1 <= 6 && r1 - r2 == 1 && board[r1][c1] == "B" && board[r2][c2] == "W" -> {
-                    board[r2][c2] = "B"
-                    board[r1][c1] = " "
-                    return true
                 }
-
-                c1 == c2 && r1 >= 1 && r1 <= 6 && r1 - r2 == 1 && board[r2][c2] != "W" ->
-                    when {
-                        board[r1][c1] == "B" -> {
-                            board[r2][c2] = "B"
-                            board[r1][c2] = " "
-                            return true
-                        }
-
-                        board[r1][c1] == " " || board[r1][c1] == "W" -> {
-                            println("No black pawn at ${input[0]}${input[1]}")
-                            return false
-                        }
-                    }
             }
+
         }
 
         println("Invalid Input")
