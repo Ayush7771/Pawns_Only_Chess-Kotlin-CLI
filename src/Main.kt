@@ -38,6 +38,7 @@ fun main() {
     }
 }
 
+
 object ChessBoard {
     val board = MutableList(8) {
         MutableList(8) {
@@ -118,24 +119,24 @@ object ChessBoard {
 
         if (firstInGame) {
             when {
-                (r1 == r2 && c1 == c2) && (board[r1][c1] == "B" || board[r1][c1] == " ") -> {
+                r1 == r2 && c1 == c2 && board[r1][c1] != "W" -> {
                     println("No white pawn at ${input[0]}${input[1]}")
                     return false
-                }
+                }  //No Whitepawn at same spot
 
-                c1 != c2 && r1 == 1 && r2 == 2 && board[r1][c1] == "W" && board[r2][c2] == "B" -> {
+                kotlin.math.abs(c1 - c2) == 1 && r1 == 1 && r2 == 2 && board[r1][c1] == "W" && board[r2][c2] == "B" -> {
                     board[r2][c2] = "W"
                     board[r1][c1] = " "
                     return true
-                }
+                } //successfully moved and captured at 3rd spot
 
-                c1 == c2 && r1 == 1 && (r2 == 2 || r2 == 3) && board[r2][c1] != "B" ->
+                c1 == c2 && r1 == 1 && (r2 == 2 || r2 == 3) && board[r2][c2] == " " ->
                     when {
                         board[r1][c1] == "W" && board[r2][c2] == "B" -> {
                             board[r2][c2] = "W"
                             board[r1][c1] = " "
                             return true
-                        }
+                        } //successfully moved
 
                         board[r1][c1] == "W" -> {
                             board[r2][c2] = "W"
@@ -149,7 +150,7 @@ object ChessBoard {
                         }
                     }
 
-                c1 != c2 && r1 in 2..<7 && r2 - r1 == 1 && board[r1][c1] == "W" && board[r2][c2] == "B" -> {
+                kotlin.math.abs(c1 - c2) == 1 && r1 in 2..<7 && r2 - r1 == 1 && board[r1][c1] == "W" && board[r2][c2] == "B" -> {
                     board[r2][c2] = "W"
                     board[r1][c1] = " "
                     return true
@@ -181,7 +182,7 @@ object ChessBoard {
                     return false
                 }
 
-                c1 != c2 && r1 == 6 && r2 == 5 && board[r1][c1] == "B" && board[r2][c2] == "W" -> {
+                kotlin.math.abs(c1 - c2) == 1 && r1 == 6 && r2 == 5 && board[r1][c1] == "B" && board[r2][c2] == "W" -> {
                     board[r2][c2] = "B"
                     board[r1][c1] = " "
                     return true
@@ -201,7 +202,7 @@ object ChessBoard {
                         }
                     }
 
-                c1 != c2 && r1 >= 1 && r1 <= 6 && r1 - r2 == 1 && board[r1][c1] == "B" && board[r2][c2] == "W" -> {
+                kotlin.math.abs(c1 - c2) == 1 && r1 >= 1 && r1 <= 6 && r1 - r2 == 1 && board[r1][c1] == "B" && board[r2][c2] == "W" -> {
                     board[r2][c2] = "B"
                     board[r1][c1] = " "
                     return true
