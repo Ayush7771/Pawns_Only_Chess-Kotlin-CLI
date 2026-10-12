@@ -103,7 +103,7 @@ object ChessBoard {
     }
 
     fun blackWinsCheck() {
-        //Win conditions for Blacl
+        //Win conditions for Black
         if (whitePawns == 0 || board[0].contains("B")) {
             println("Black Wins!")
             exitProgram = true
@@ -147,6 +147,9 @@ object ChessBoard {
                     println("No white pawn at ${input[0]}${input[1]}")
                     return false
                 }
+
+                //implementing En Passant Feature for White
+
 
                 //Adjacent Lines (2 no. row) first moves without captur
                 c1 == c2 && r1 == 1 -> {
@@ -208,7 +211,9 @@ object ChessBoard {
                     return false
                 }
 
-                //Adjacent Lines (7 no. row) first moves without captur
+                //implementing En Passant Feature for Black
+
+                //Adjacent Lines (7 no. row) first moves without capture
                 c1 == c2 && r1 == 6 -> {
                     when {
                         //first vertical single move
